@@ -1,0 +1,19 @@
+{
+  "name": "election-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.5",
+    "express": "^4.17.1",
+    "mysql2": "^2.1.0",
+    "redis": "^3.0.2",
+    "sequelize": "^5.21.5"
+  }
+}

@@ -1,0 +1,56 @@
+version: '2.4'
+
+services:
+  election_api:
+    build:
+      context: election-api
+    container_name: election_api
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./election-api/src:/node/app/src
+      - /node/app/node_modules
+
+  db:
+    image: mariadb:10.4
+    container_name: election_db
+    volumes:
+      - db:/var/lib/mysql
+    ports:
+      - "5001:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: election
+    healthcheck:
+      test: mysqladmin ping -uroot -pelection -h 127.0.0.1
+
+  rabbitmq:
+    image: rabbitmq:3.8-management
+    container_name: rabbitmq
+    hostname: rabbitmq # this is important to persist the queue
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+
+  queue-worker:
+    container_name: queue-worker
+    build:
+      context: queue-worker
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./queue-worker/src:/node/app/src
+      - /node/app/node_modules
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+
+volumes:
+  db:
+  rabbitmqdata:
